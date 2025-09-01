@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var selectedItem: SidebarItem? = nil
-    
     // Sample data for the sidebar
     private let sidebarItems = [
         SidebarItem(id: 1, title: "Home", icon: "house"),
@@ -18,6 +16,13 @@ struct ContentView: View {
         SidebarItem(id: 4, title: "Documents", icon: "doc"),
         SidebarItem(id: 5, title: "Favorites", icon: "heart")
     ]
+    
+    @State private var selectedItem: SidebarItem
+    
+    init() {
+        // Set default selected item to the first item
+        _selectedItem = State(initialValue: sidebarItems[0])
+    }
 
     var body: some View {
         NavigationSplitView {
@@ -40,7 +45,7 @@ struct SidebarItem: Identifiable, Hashable {
 // MARK: - Sidebar View
 struct SidebarView: View {
     let items: [SidebarItem]
-    @Binding var selectedItem: SidebarItem?
+    @Binding var selectedItem: SidebarItem
     
     var body: some View {
         List(items, id: \.self, selection: $selectedItem) { item in
@@ -70,61 +75,46 @@ struct SidebarView: View {
 
 // MARK: - Detail View
 struct DetailView: View {
-    let selectedItem: SidebarItem?
+    let selectedItem: SidebarItem
     
     var body: some View {
-            if let item = selectedItem {
-                VStack(spacing: 20) {
-                    Image(systemName: item.icon)
-                        .font(.system(size: 60))
-                        .foregroundColor(.blue)
-                    
-                    Text(item.title)
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                    
-                    Text("This is the detail view for \(item.title)")
-                        .font(.body)
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
-                    
-                    
-                    // Add your custom content here
-                    VStack {
-                        Text("Add your custom views here")
-                            .font(.caption)
-                        
-                        // Example of adding custom content
-                        Button("Sample Action") {
-                            print("Action for \(item.title)")
-                        }
-                        .buttonStyle(.bordered)
-                    }
-                    
-                    Spacer()
-                }
-                .padding()
-            } else {
-                // Default state when no item is selected
-                VStack(spacing: 20) {
-                    Image(systemName: "sidebar.left")
-                        .font(.system(size: 60))
-                        .foregroundColor(.gray)
-                    
-                    Text("Select an item")
-                        .font(.title)
-                        .foregroundColor(.secondary)
-                    
-                    Text("Choose an item from the sidebar to view its details")
-                        .font(.body)
-                        .multilineTextAlignment(.center)
-                }
-                .padding()
+        VStack(spacing: 20) {
+            // Header Section
+            VStack(spacing: 16) {
+                Image(systemName: selectedItem.icon)
+                    .font(.system(size: 60))
+                    .foregroundColor(.blue)
+                
+                Text(selectedItem.title)
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                
+                Text("This is the detail view for \(selectedItem.title)")
+                    .font(.body)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
             }
+            
+            Spacer()
+            
+            // Custom Content Section
+            VStack(spacing: 16) {
+                Text("Add your custom views here")
+                    .font(.caption)
+                
+                Button("Sample Action") {
+                    print("Action for \(selectedItem.title)")
+                }
+                .buttonStyle(.bordered)
+            }
+            
+            Spacer()
         }
+        .padding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
 }
 
 #Preview {
     ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
 }
