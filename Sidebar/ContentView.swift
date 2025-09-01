@@ -8,58 +8,60 @@
 import SwiftUI
 
 struct ContentView: View {
-    // Use the centralized sidebar items from ViewRouter
-    private let sidebarItems = ViewRouter.sidebarItems
-    
-    @State private var selectedItem: SidebarItem
-    
-    init() {
-        // Set default selected item to the first item (Home)
-        _selectedItem = State(initialValue: ViewRouter.sidebarItems[0])
-    }
+  // Use the centralized sidebar items from ViewRouter
+  private let sidebarItems = ViewRouter.sidebarItems
 
-    var body: some View {
-        NavigationSplitView {
-            // Sidebar (Left Column)
-            SidebarView(items: sidebarItems, selectedItem: $selectedItem)
-        } detail: {
-            // Detail View (Right Column)
-            DetailView(selectedItem: selectedItem)
-        }
+  @State private var selectedItem: SidebarItem
+
+  init() {
+    // Set default selected item to the first item (Home)
+    _selectedItem = State(initialValue: ViewRouter.sidebarItems[0])
+  }
+
+  var body: some View {
+    NavigationSplitView {
+      // Sidebar (Left Column)
+      SidebarView(items: sidebarItems, selectedItem: $selectedItem)
+    } detail: {
+      // Detail View (Right Column)
+      DetailView(selectedItem: selectedItem)
     }
+  }
 }
 
 // MARK: - Sidebar View
+
 struct SidebarView: View {
-    let items: [SidebarItem]
-    @Binding var selectedItem: SidebarItem
-    
-    var body: some View {
-        List(items, id: \.self, selection: $selectedItem) { item in
-            NavigationLink(value: item) {
-                HStack {
-                    Image(systemName: item.icon)
-                        .foregroundColor(.blue)
-                        .frame(width: 20)
-                    Text(item.title)
-                }
-            }
+  let items: [SidebarItem]
+  @Binding var selectedItem: SidebarItem
+
+  var body: some View {
+    List(items, id: \.self, selection: $selectedItem) { item in
+      NavigationLink(value: item) {
+        HStack {
+          Image(systemName: item.icon)
+            .foregroundColor(.blue)
+            .frame(width: 20)
+          Text(item.title)
         }
-        .navigationTitle("Sidebar")
-        .navigationSplitViewColumnWidth(min: 200, ideal: 250, max: 300)
+      }
     }
+    .navigationTitle("Sidebar")
+    .navigationSplitViewColumnWidth(min: 200, ideal: 250, max: 300)
+  }
 }
 
 // MARK: - Detail View
+
 struct DetailView: View {
-    let selectedItem: SidebarItem
-    
-    var body: some View {
-        // Use the ViewRouter to get the appropriate view for the selected item
-        ViewRouter.buildView(for: selectedItem)
-    }
+  let selectedItem: SidebarItem
+
+  var body: some View {
+    // Use the ViewRouter to get the appropriate view for the selected item
+    ViewRouter.buildView(for: selectedItem)
+  }
 }
 
 #Preview {
-    ContentView()
+  ContentView()
 }
