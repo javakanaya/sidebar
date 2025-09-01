@@ -56,11 +56,10 @@ struct DocumentsView: View {
         .padding(.bottom, 16)
 
         // Documents List
-        ForEach(filteredDocuments) { document in
+        List(filteredDocuments) { document in
           NavigationLink(value: document) {
             DocumentRow(document: document)
           }
-          .buttonStyle(PlainButtonStyle())
         }
       }
       .padding(.top)
