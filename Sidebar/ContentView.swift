@@ -8,20 +8,14 @@
 import SwiftUI
 
 struct ContentView: View {
-    // Sample data for the sidebar
-    private let sidebarItems = [
-        SidebarItem(id: 1, title: "Home", icon: "house"),
-        SidebarItem(id: 2, title: "Profile", icon: "person"),
-        SidebarItem(id: 3, title: "Settings", icon: "gear"),
-        SidebarItem(id: 4, title: "Documents", icon: "doc"),
-        SidebarItem(id: 5, title: "Favorites", icon: "heart")
-    ]
+    // Use the centralized sidebar items from ViewRouter
+    private let sidebarItems = ViewRouter.sidebarItems
     
     @State private var selectedItem: SidebarItem
     
     init() {
-        // Set default selected item to the first item
-        _selectedItem = State(initialValue: sidebarItems[0])
+        // Set default selected item to the first item (Home)
+        _selectedItem = State(initialValue: ViewRouter.sidebarItems[0])
     }
 
     var body: some View {
@@ -33,13 +27,6 @@ struct ContentView: View {
             DetailView(selectedItem: selectedItem)
         }
     }
-}
-
-// MARK: - Sidebar Item Model
-struct SidebarItem: Identifiable, Hashable {
-    let id: Int
-    let title: String
-    let icon: String
 }
 
 // MARK: - Sidebar View
@@ -60,16 +47,6 @@ struct SidebarView: View {
         }
         .navigationTitle("Sidebar")
         .navigationSplitViewColumnWidth(min: 200, ideal: 250, max: 300)
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button(action: {
-                    // Add your action here
-                    print("Add button tapped")
-                }) {
-                    Label("Add", systemImage: "plus")
-                }
-            }
-        }
     }
 }
 

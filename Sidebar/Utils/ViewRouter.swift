@@ -7,71 +7,70 @@
 
 import SwiftUI
 
-/// A router that maps SidebarItem objects to their corresponding views
-struct ViewRouter {
+/// Enum defining all available sidebar item types
+enum SidebarItemType: String, CaseIterable, Identifiable {
+    case home = "home"
+    case profile = "profile"
+    case settings = "settings"
+    case documents = "documents"
+    case favorites = "favorites"
     
-    /// Map of SidebarItem to View - this is what you requested!
-    /// Usage: ViewRouter.viewMap[sidebarItem] will return the appropriate view
-    static let viewMap: [SidebarItem: AnyView] = [
-        SidebarItem(id: 1, title: "Home", icon: "house"): AnyView(HomeView()),
-        SidebarItem(id: 2, title: "Profile", icon: "person"): AnyView(ProfileView()),
-        SidebarItem(id: 3, title: "Settings", icon: "gear"): AnyView(SettingsView()),
-        SidebarItem(id: 4, title: "Documents", icon: "doc"): AnyView(DocumentsView()),
-        SidebarItem(id: 5, title: "Favorites", icon: "heart"): AnyView(FavoritesView())
-    ]
+    var id: String { self.rawValue }
     
-    /// Helper method to get a view for a specific sidebar item
-    /// Returns a default view if the item is not found in the map
-    static func getView(for item: SidebarItem) -> AnyView {
-        return viewMap[item] ?? AnyView(DefaultDetailView(item: item))
+    /// Display title for each sidebar item
+    var title: String {
+        switch self {
+        case .home: return "Home"
+        case .profile: return "Profile"
+        case .settings: return "Settings"
+        case .documents: return "Documents"
+        case .favorites: return "Favorites"
+        }
     }
     
-    /// Alternative approach using a switch statement for better performance
-    /// This avoids the dictionary lookup and AnyView type erasure
-    @ViewBuilder
-    static func buildView(for item: SidebarItem) -> some View {
-        switch item.id {
-        case 1: // Home
-            HomeView()
-        case 2: // Profile
-            ProfileView()
-        case 3: // Settings
-            SettingsView()
-        case 4: // Documents
-            DocumentsView()
-        case 5: // Favorites
-            FavoritesView()
-        default:
-            DefaultDetailView(item: item)
+    /// SF Symbol icon for each sidebar item
+    var icon: String {
+        switch self {
+        case .home: return "house"
+        case .profile: return "person"
+        case .settings: return "gear"
+        case .documents: return "doc"
+        case .favorites: return "heart"
         }
     }
 }
 
-/// Default view shown when no specific view is mapped for a sidebar item
-struct DefaultDetailView: View {
-    let item: SidebarItem
+/// A router that maps SidebarItem objects to their corresponding views
+struct ViewRouter {
     
-    var body: some View {
-        VStack(spacing: 20) {
-            Image(systemName: item.icon)
-                .font(.system(size: 60))
-                .foregroundColor(.blue)
-            
-            Text(item.title)
-                .font(.largeTitle)
-                .fontWeight(.bold)
-            
-            Text("This is the default view for \(item.title)")
-                .font(.body)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
-            
-            Button("Coming Soon") {
-                print("Feature coming soon for \(item.title)")
-            }
-            .buttonStyle(.bordered)
-        }
-        .padding()
-        .navigationTitle(item.title)
+    /// Generates all sidebar items from the enum
+    static let sidebarItems: [SidebarItem] = SidebarItemType.allCases.map { type in
+        SidebarItem(type: type)
     }
+    
+    /// Primary method to build views using @ViewBuilder for optimal performance
+    @ViewBuilder
+    static func buildView(for item: SidebarItem) -> some View {
+        switch item.type {
+        case .home:
+            HomeView()
+        case .profile:
+            ProfileView()
+        case .settings:
+            SettingsView()
+        case .documents:
+            DocumentsView()
+        case .favorites:
+            FavoritesView()
+        }
+    }
+}
+
+/// Updated SidebarItem model using enum-based approach
+struct SidebarItem: Identifiable, Hashable {
+    let type: SidebarItemType
+    
+    var id: String { type.id }
+    var title: String { type.title }
+    var icon: String { type.icon }
 }
