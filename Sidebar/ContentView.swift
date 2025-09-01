@@ -78,40 +78,8 @@ struct DetailView: View {
     let selectedItem: SidebarItem
     
     var body: some View {
-        VStack(spacing: 20) {
-            // Header Section
-            VStack(spacing: 16) {
-                Image(systemName: selectedItem.icon)
-                    .font(.system(size: 60))
-                    .foregroundColor(.blue)
-                
-                Text(selectedItem.title)
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                
-                Text("This is the detail view for \(selectedItem.title)")
-                    .font(.body)
-                    .foregroundColor(.secondary)
-                    .multilineTextAlignment(.center)
-            }
-            
-            Spacer()
-            
-            // Custom Content Section
-            VStack(spacing: 16) {
-                Text("Add your custom views here")
-                    .font(.caption)
-                
-                Button("Sample Action") {
-                    print("Action for \(selectedItem.title)")
-                }
-                .buttonStyle(.bordered)
-            }
-            
-            Spacer()
-        }
-        .padding()
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        // Use the ViewRouter to get the appropriate view for the selected item
+        ViewRouter.buildView(for: selectedItem)
     }
 }
 
