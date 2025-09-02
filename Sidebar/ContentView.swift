@@ -20,11 +20,11 @@ struct ContentView: View {
 
   var body: some View {
     NavigationSplitView {
-      // Sidebar (Left Column)
+      // Left Column
       SidebarView(items: sidebarItems, selectedItem: $selectedItem)
     } detail: {
-      // Detail View (Right Column)
-      DetailView(selectedItem: selectedItem)
+      // Right Column
+      ViewRouter.buildView(for: selectedItem)
     }
   }
 }
@@ -48,17 +48,6 @@ struct SidebarView: View {
     }
     .navigationTitle("Sidebar")
     .navigationSplitViewColumnWidth(min: 200, ideal: 250, max: 300)
-  }
-}
-
-// MARK: - Detail View
-
-struct DetailView: View {
-  let selectedItem: SidebarItem
-
-  var body: some View {
-    // Use the ViewRouter to get the appropriate view for the selected item
-    ViewRouter.buildView(for: selectedItem)
   }
 }
 
