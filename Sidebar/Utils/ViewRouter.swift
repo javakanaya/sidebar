@@ -13,7 +13,7 @@ enum SidebarItemType: String, CaseIterable, Identifiable {
   case profile
   case settings
   case documents
-  case favorites
+  case videos
 
   var id: String { rawValue }
 
@@ -24,7 +24,7 @@ enum SidebarItemType: String, CaseIterable, Identifiable {
     case .profile: return "Profile"
     case .settings: return "Settings"
     case .documents: return "Documents"
-    case .favorites: return "Favorites"
+    case .videos: return "Videos"
     }
   }
 
@@ -35,7 +35,7 @@ enum SidebarItemType: String, CaseIterable, Identifiable {
     case .profile: return "person"
     case .settings: return "gear"
     case .documents: return "doc"
-    case .favorites: return "heart"
+    case .videos: return "play.rectangle"
     }
   }
 }
@@ -59,8 +59,8 @@ enum ViewRouter {
       SettingsView()
     case .documents:
       DocumentsView()
-    case .favorites:
-      FavoritesView()
+    case .videos:
+      VideosView()
     }
   }
 }
