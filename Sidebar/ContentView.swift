@@ -13,9 +13,9 @@ struct ContentView: View {
 
   @State private var selectedItem: SidebarItem
 
-  init() {
-    // Set default selected item to the first item (Home)
-    _selectedItem = State(initialValue: ViewRouter.sidebarItems[0])
+  init(initialSelectedItem: SidebarItem? = nil) {
+    // Set default selected item to the provided item or first item (Home)
+    _selectedItem = State(initialValue: initialSelectedItem ?? ViewRouter.sidebarItems[0])
   }
 
   var body: some View {
@@ -64,4 +64,12 @@ struct DetailView: View {
 
 #Preview {
   ContentView()
+}
+
+#Preview("Profile Selected") {
+  ContentView(initialSelectedItem: ViewRouter.sidebarItems.first { $0.type == .profile })
+}
+
+#Preview("Settings Selected") {
+  ContentView(initialSelectedItem: ViewRouter.sidebarItems.first { $0.type == .settings })
 }

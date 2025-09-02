@@ -24,7 +24,7 @@ struct SidebarApp: App {
 
   var body: some Scene {
     WindowGroup {
-      ContentView()
+      ContentView(initialSelectedItem: ViewRouter.sidebarItems.first { $0.type == .home })
     }
     .modelContainer(sharedModelContainer)
   }
