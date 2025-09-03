@@ -182,7 +182,6 @@ class VideoMLManager: ObservableObject {
     var frameNumber = 0
     
     // Generate timestamps for frame extraction
-    var currentTime: TimeInterval = 0
     let timestamps = stride(from: 0, to: duration, by: frameInterval).map { $0 }
     
     print("📈 [VideoMLManager] Generated \(timestamps.count) timestamps for processing")
@@ -199,10 +198,10 @@ class VideoMLManager: ObservableObject {
       do {
         // Extract frame at timestamp
         let time = CMTime(seconds: timestamp, preferredTimescale: 600)
-        let cgImage = try imageGenerator.copyCGImage(at: time, actualTime: nil)
+        let cgImage = try await imageGenerator.image(at: time)
         
         // Convert to NSImage
-        let nsImage = NSImage(cgImage: cgImage, size: NSSize(width: cgImage.width, height: cgImage.height))
+        let nsImage = NSImage(cgImage: cgImage.image as CGImage, size: NSSize(width: cgImage.image.width, height: cgImage.image.height))
         
         print("🖼️ [VideoMLManager] Extracted frame \(frameNumber) at \(String(format: "%.2f", timestamp))s")
         
