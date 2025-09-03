@@ -433,10 +433,12 @@ class MLManager: ObservableObject {
   
   private func cgImageToPixelBuffer(_ cgImage: CGImage) throws -> CVPixelBuffer {
     print("🔄 [CVPixelBuffer] Converting CGImage to CVPixelBuffer...")
-    let width = cgImage.width
-    let height = cgImage.height
+    // Force the dimensions to exactly 640x640 as required by both models
+    let width = 640
+    let height = 640
     
-    print("📐 [CVPixelBuffer] Image dimensions: \(width)x\(height)")
+    print("📐 [CVPixelBuffer] Input CGImage dimensions: \(cgImage.width)x\(cgImage.height)")
+    print("📐 [CVPixelBuffer] Output CVPixelBuffer dimensions: \(width)x\(height)")
     
     let attributes: [String: Any] = [
       kCVPixelBufferCGImageCompatibilityKey as String: true,
