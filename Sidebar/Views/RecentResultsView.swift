@@ -35,7 +35,6 @@ struct RecentResultsView: View {
   }
   
   var body: some View {
-    NavigationView {
       VStack(spacing: 0) {
         // Header with tabs
         headerSection
@@ -61,7 +60,6 @@ struct RecentResultsView: View {
       .onChange(of: searchText) { _, _ in
         searchResults()
       }
-    }
   }
   
   // MARK: - Header Section
@@ -282,38 +280,69 @@ struct ImageResultCard: View {
   
   var body: some View {
     VStack(alignment: .leading, spacing: 12) {
-      // Header
-      HStack {
-        VStack(alignment: .leading, spacing: 4) {
-          Text(result.imageName ?? "Unknown Image")
-            .font(.headline)
-            .fontWeight(.medium)
-          
-          Text(result.processedAt, style: .time)
-            .font(.caption)
-            .foregroundColor(.secondary)
+      // Header with image preview
+      HStack(alignment: .top, spacing: 16) {
+        // Image preview with detections
+        if let imageData = result.imageData,
+           let imageWidth = result.imageWidth,
+           let imageHeight = result.imageHeight {
+          ImagePreviewWithDetections(
+            imageData: imageData,
+            detections: result.detections,
+            imageSize: CGSize(width: imageWidth, height: imageHeight),
+            maxWidth: 150,
+            maxHeight: 120
+          )
+        } else {
+          // Fallback placeholder
+          RoundedRectangle(cornerRadius: 8)
+            .fill(Color.gray.opacity(0.2))
+            .frame(width: 150, height: 120)
+            .overlay(
+              VStack {
+                Image(systemName: "photo")
+                  .font(.system(size: 30))
+                  .foregroundColor(.gray)
+                Text("No preview")
+                  .font(.caption2)
+                  .foregroundColor(.secondary)
+              }
+            )
         }
         
-        Spacer()
-        
-        HStack(spacing: 12) {
-          Text("\(result.totalDetections) detections")
-            .font(.caption)
-            .padding(.horizontal, 8)
-            .padding(.vertical, 2)
-            .background(Color.blue.opacity(0.1))
-            .cornerRadius(4)
-          
-          Button(action: { onDelete() }) {
-            Image(systemName: "trash")
-              .foregroundColor(.red)
+        // Header info
+        VStack(alignment: .leading, spacing: 8) {
+          VStack(alignment: .leading, spacing: 4) {
+            Text(result.imageName ?? "Unknown Image")
+              .font(.headline)
+              .fontWeight(.medium)
+            
+            Text(result.processedAt, style: .time)
+              .font(.caption)
+              .foregroundColor(.secondary)
           }
-          .buttonStyle(.plain)
           
-          Button(action: { isExpanded.toggle() }) {
-            Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+          HStack(spacing: 12) {
+            Text("\(result.totalDetections) detections")
+              .font(.caption)
+              .padding(.horizontal, 8)
+              .padding(.vertical, 2)
+              .background(Color.blue.opacity(0.1))
+              .cornerRadius(4)
+            
+            Button(action: { onDelete() }) {
+              Image(systemName: "trash")
+                .foregroundColor(.red)
+            }
+            .buttonStyle(.plain)
+            
+            Button(action: { isExpanded.toggle() }) {
+              Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+            }
+            .buttonStyle(.plain)
           }
-          .buttonStyle(.plain)
+          
+          Spacer()
         }
       }
       

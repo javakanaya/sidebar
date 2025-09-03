@@ -106,7 +106,7 @@ class MLManager: ObservableObject {
   
   // MARK: - Prediction Methods
   
-  func predictWithYolo(image: NSImage, confidenceThreshold: Double = 0.25, iouThreshold: Double = 0.7) async {
+  func predictWithYolo(image: NSImage, imageName: String? = nil, imageData: Data? = nil, confidenceThreshold: Double = 0.25, iouThreshold: Double = 0.7) async {
     print("🎯 [MLManager] Starting YOLO prediction with confidence=\(confidenceThreshold), iou=\(iouThreshold)")
     guard let model = yoloModel else {
       print("❌ [MLManager] YOLO model not loaded!")
@@ -118,12 +118,14 @@ class MLManager: ObservableObject {
     await performYoloPrediction(
       image: image,
       model: model,
+      imageName: imageName,
+      imageData: imageData,
       confidenceThreshold: confidenceThreshold,
       iouThreshold: iouThreshold
     )
   }
   
-  func predictWithTShirt(image: NSImage, confidenceThreshold: Double = 0.25, iouThreshold: Double = 0.7) async {
+  func predictWithTShirt(image: NSImage, imageName: String? = nil, imageData: Data? = nil, confidenceThreshold: Double = 0.25, iouThreshold: Double = 0.7) async {
     print("👕 [MLManager] Starting T-Shirt prediction with confidence=\(confidenceThreshold), iou=\(iouThreshold)")
     guard let model = tshirtModel else {
       print("❌ [MLManager] T-Shirt model not loaded!")
@@ -135,6 +137,8 @@ class MLManager: ObservableObject {
     await performTShirtPrediction(
       image: image,
       model: model,
+      imageName: imageName,
+      imageData: imageData,
       confidenceThreshold: confidenceThreshold,
       iouThreshold: iouThreshold
     )
@@ -143,6 +147,8 @@ class MLManager: ObservableObject {
   private func performYoloPrediction(
     image: NSImage,
     model: Yolo11s,
+    imageName: String? = nil,
+    imageData: Data? = nil,
     confidenceThreshold: Double,
     iouThreshold: Double
   ) async {
@@ -209,7 +215,8 @@ class MLManager: ObservableObject {
         if let persistenceService = self.persistenceService {
           persistenceService.saveImageResult(
             result,
-            imageName: "YOLO_Image_\(Date().timeIntervalSince1970)",
+            imageName: imageName ?? "YOLO_Image_\(Date().timeIntervalSince1970)",
+            imageData: imageData,
             imageSize: image.size,
             confidenceThreshold: confidenceThreshold,
             iouThreshold: iouThreshold
@@ -230,6 +237,8 @@ class MLManager: ObservableObject {
   private func performTShirtPrediction(
     image: NSImage,
     model: TShirtDetectionModel,
+    imageName: String? = nil,
+    imageData: Data? = nil,
     confidenceThreshold: Double,
     iouThreshold: Double
   ) async {
@@ -297,7 +306,8 @@ class MLManager: ObservableObject {
         if let persistenceService = self.persistenceService {
           persistenceService.saveImageResult(
             result,
-            imageName: "TShirt_Image_\(Date().timeIntervalSince1970)",
+            imageName: imageName ?? "TShirt_Image_\(Date().timeIntervalSince1970)",
+            imageData: imageData,
             imageSize: image.size,
             confidenceThreshold: confidenceThreshold,
             iouThreshold: iouThreshold

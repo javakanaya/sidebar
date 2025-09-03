@@ -12,6 +12,8 @@ struct MLDemoView: View {
   @Environment(\.modelContext) private var modelContext
   @StateObject private var mlManager = MLManager()
   @State private var selectedImage: NSImage?
+  @State private var selectedImageData: Data? // Store image data for persistence
+  @State private var selectedImageName: String?
   @State private var selectedModel: ModelType = .yolo
   @State private var confidenceThreshold: Double = 0.25
   @State private var iouThreshold: Double = 0.7
@@ -359,26 +361,22 @@ struct MLDemoView: View {
         }
         
         // Try to load the image
-        if let image = NSImage(contentsOf: url) {
-          selectedImage = image
-          print("✅ [MLDemoView] Image loaded successfully, size: \(image.size)")
-        } else {
-          print("❌ [MLDemoView] Failed to create NSImage from URL")
-          // Try alternative loading method
-          do {
-            let imageData = try Data(contentsOf: url)
-            print("📊 [MLDemoView] Image data loaded, size: \(imageData.count) bytes")
-            if let image = NSImage(data: imageData) {
-              selectedImage = image
-              print("✅ [MLDemoView] Image loaded successfully via Data, size: \(image.size)")
-            } else {
-              print("❌ [MLDemoView] Failed to create NSImage from Data")
-              mlManager.errorMessage = "Unable to load the selected image file"
-            }
-          } catch {
-            print("❌ [MLDemoView] Failed to load image data: \(error)")
-            mlManager.errorMessage = "Failed to read image file: \(error.localizedDescription)"
+        do {
+          let imageData = try Data(contentsOf: url)
+          print("📊 [MLDemoView] Image data loaded, size: \(imageData.count) bytes")
+          
+          if let image = NSImage(data: imageData) {
+            selectedImage = image
+            selectedImageData = imageData // Store for persistence
+            selectedImageName = url.lastPathComponent
+            print("✅ [MLDemoView] Image loaded successfully via Data, size: \(image.size)")
+          } else {
+            print("❌ [MLDemoView] Failed to create NSImage from Data")
+            mlManager.errorMessage = "Unable to load the selected image file"
           }
+        } catch {
+          print("❌ [MLDemoView] Failed to load image data: \(error)")
+          mlManager.errorMessage = "Failed to read image file: \(error.localizedDescription)"
         }
       } else {
         print("❌ [MLDemoView] No URL in selection result")
@@ -403,12 +401,16 @@ struct MLDemoView: View {
       case .yolo:
         await mlManager.predictWithYolo(
           image: image,
+          imageName: selectedImageName,
+          imageData: selectedImageData,
           confidenceThreshold: confidenceThreshold,
           iouThreshold: iouThreshold
         )
       case .tshirt:
         await mlManager.predictWithTShirt(
           image: image,
+          imageName: selectedImageName,
+          imageData: selectedImageData,
           confidenceThreshold: confidenceThreshold,
           iouThreshold: iouThreshold
         )

@@ -121,6 +121,8 @@ class ImageMLResultEntity {
   
   // Image metadata
   var imageName: String?
+  var imagePath: String? // Store the file path for loading the image
+  var imageData: Data? // Store actual image data for preview
   var imageWidth: Double?
   var imageHeight: Double?
   
@@ -128,7 +130,7 @@ class ImageMLResultEntity {
   @Relationship(deleteRule: .cascade)
   var detections: [DetectionResultEntity]
   
-  init(id: UUID, processedAt: Date, modelUsed: String, processingTime: TimeInterval, confidenceThreshold: Double, iouThreshold: Double, imageName: String? = nil, imageWidth: Double? = nil, imageHeight: Double? = nil) {
+  init(id: UUID, processedAt: Date, modelUsed: String, processingTime: TimeInterval, confidenceThreshold: Double, iouThreshold: Double, imageName: String? = nil, imagePath: String? = nil, imageData: Data? = nil, imageWidth: Double? = nil, imageHeight: Double? = nil) {
     self.id = id
     self.processedAt = processedAt
     self.modelUsed = modelUsed
@@ -136,13 +138,15 @@ class ImageMLResultEntity {
     self.confidenceThreshold = confidenceThreshold
     self.iouThreshold = iouThreshold
     self.imageName = imageName
+    self.imagePath = imagePath
+    self.imageData = imageData
     self.imageWidth = imageWidth
     self.imageHeight = imageHeight
     self.detections = []
   }
   
   // Convenience initializer from MLPredictionResult
-  convenience init(from result: MLPredictionResult, imageName: String? = nil, imageSize: CGSize? = nil, confidenceThreshold: Double, iouThreshold: Double) {
+  convenience init(from result: MLPredictionResult, imageName: String? = nil, imagePath: String? = nil, imageData: Data? = nil, imageSize: CGSize? = nil, confidenceThreshold: Double, iouThreshold: Double) {
     self.init(
       id: UUID(),
       processedAt: Date(),
@@ -151,6 +155,8 @@ class ImageMLResultEntity {
       confidenceThreshold: confidenceThreshold,
       iouThreshold: iouThreshold,
       imageName: imageName,
+      imagePath: imagePath,
+      imageData: imageData,
       imageWidth: imageSize.map { Double($0.width) },
       imageHeight: imageSize.map { Double($0.height) }
     )

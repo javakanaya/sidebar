@@ -20,13 +20,15 @@ class MLResultsPersistenceService: ObservableObject {
   
   // MARK: - Image ML Results
   
-  func saveImageResult(_ result: MLPredictionResult, imageName: String? = nil, imageSize: CGSize? = nil, confidenceThreshold: Double, iouThreshold: Double) {
+  func saveImageResult(_ result: MLPredictionResult, imageName: String? = nil, imagePath: String? = nil, imageData: Data? = nil, imageSize: CGSize? = nil, confidenceThreshold: Double, iouThreshold: Double) {
     print("💾 [MLResultsPersistenceService] Saving image ML result...")
     print("📊 [MLResultsPersistenceService] Result: \(result.detections.count) detections, model: \(result.modelUsed)")
     
     let imageResult = ImageMLResultEntity(
       from: result,
       imageName: imageName,
+      imagePath: imagePath,
+      imageData: imageData,
       imageSize: imageSize,
       confidenceThreshold: confidenceThreshold,
       iouThreshold: iouThreshold
