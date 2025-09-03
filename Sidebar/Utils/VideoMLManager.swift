@@ -57,6 +57,9 @@ class VideoMLManager: ObservableObject {
   // Dependencies
   private let mlManager = MLManager()
   
+  // Persistence service (optional - will be set by views that want to save results)
+  var persistenceService: MLResultsPersistenceService?
+  
   // Processing configuration
   private var processingFrameRate: Double = 2.0 // Process 2 frames per second
   private var isCancelled = false
@@ -141,6 +144,16 @@ class VideoMLManager: ObservableObject {
       )
       
       lastVideoResult = result
+      
+      // Auto-save result if persistence service is available
+      if let persistenceService = self.persistenceService {
+        persistenceService.saveVideoResult(
+          result,
+          confidenceThreshold: confidenceThreshold,
+          iouThreshold: iouThreshold
+        )
+      }
+      
       currentProcessingStatus = "Processing completed successfully!"
       
       print("✅ [VideoMLManager] Processing complete!")

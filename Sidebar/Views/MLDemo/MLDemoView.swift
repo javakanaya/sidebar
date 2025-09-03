@@ -9,6 +9,7 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct MLDemoView: View {
+  @Environment(\.modelContext) private var modelContext
   @StateObject private var mlManager = MLManager()
   @State private var selectedImage: NSImage?
   @State private var selectedModel: ModelType = .yolo
@@ -69,6 +70,9 @@ struct MLDemoView: View {
     .onAppear {
       print("🎬 [MLDemoView] ML Demo view appeared")
       print("📊 [MLDemoView] Initial state - Model: \(selectedModel.rawValue), Confidence: \(confidenceThreshold), IoU: \(iouThreshold)")
+      
+      // Setup persistence service for auto-saving results
+      mlManager.persistenceService = MLResultsPersistenceService(modelContext: modelContext)
     }
     .fileImporter(
       isPresented: $isShowingImagePicker,

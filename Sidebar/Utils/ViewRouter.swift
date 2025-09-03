@@ -16,6 +16,7 @@ enum SidebarItemType: String, CaseIterable, Identifiable {
   case videos
   case mlDemo
   case videoMlDemo
+  case recentResults
 
   var id: String { rawValue }
 
@@ -29,6 +30,7 @@ enum SidebarItemType: String, CaseIterable, Identifiable {
     case .videos: return "Videos"
     case .mlDemo: return "ML Demo"
     case .videoMlDemo: return "Video ML Demo"
+    case .recentResults: return "Recent Results"
     }
   }
 
@@ -42,6 +44,7 @@ enum SidebarItemType: String, CaseIterable, Identifiable {
     case .videos: return "play.rectangle"
     case .mlDemo: return "brain.head.profile"
     case .videoMlDemo: return "video"
+    case .recentResults: return "clock.arrow.circlepath"
     }
   }
 }
@@ -71,6 +74,8 @@ enum ViewRouter {
       MLDemoView()
     case .videoMlDemo:
       VideoMLDemoView()
+    case .recentResults:
+      RecentResultsView()
     }
   }
 }

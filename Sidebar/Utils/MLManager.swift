@@ -33,6 +33,9 @@ class MLManager: ObservableObject {
   @Published var errorMessage: String?
   @Published var lastPredictionResult: MLPredictionResult?
   
+  // Persistence service (optional - will be set by views that want to save results)
+  var persistenceService: MLResultsPersistenceService?
+  
   // Models - Using generated classes
   private var yoloModel: Yolo11s?
   private var tshirtModel: TShirtDetectionModel?
@@ -195,11 +198,24 @@ class MLManager: ObservableObject {
       }
       
       await MainActor.run {
-        self.lastPredictionResult = MLPredictionResult(
+        let result = MLPredictionResult(
           detections: detections,
           processingTime: processingTime,
           modelUsed: "YOLO11s"
         )
+        self.lastPredictionResult = result
+        
+        // Auto-save result if persistence service is available
+        if let persistenceService = self.persistenceService {
+          persistenceService.saveImageResult(
+            result,
+            imageName: "YOLO_Image_\(Date().timeIntervalSince1970)",
+            imageSize: image.size,
+            confidenceThreshold: confidenceThreshold,
+            iouThreshold: iouThreshold
+          )
+        }
+        
         print("✅ [YOLO] Results saved to UI state")
       }
       
@@ -270,11 +286,24 @@ class MLManager: ObservableObject {
       }
       
       await MainActor.run {
-        self.lastPredictionResult = MLPredictionResult(
+        let result = MLPredictionResult(
           detections: detections,
           processingTime: processingTime,
           modelUsed: "T-Shirt Detection"
         )
+        self.lastPredictionResult = result
+        
+        // Auto-save result if persistence service is available
+        if let persistenceService = self.persistenceService {
+          persistenceService.saveImageResult(
+            result,
+            imageName: "TShirt_Image_\(Date().timeIntervalSince1970)",
+            imageSize: image.size,
+            confidenceThreshold: confidenceThreshold,
+            iouThreshold: iouThreshold
+          )
+        }
+        
         print("✅ [T-Shirt] Results saved to UI state")
       }
       

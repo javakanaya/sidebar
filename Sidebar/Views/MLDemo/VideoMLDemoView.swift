@@ -10,6 +10,7 @@ import UniformTypeIdentifiers
 import AVFoundation
 
 struct VideoMLDemoView: View {
+  @Environment(\.modelContext) private var modelContext
   @StateObject private var videoMLManager = VideoMLManager()
   @State private var selectedVideoURL: URL?
   @State private var selectedModel: ModelType = .yolo
@@ -77,6 +78,9 @@ struct VideoMLDemoView: View {
     .onAppear {
       print("🎬 [VideoMLDemoView] Video ML Demo view appeared")
       print("📊 [VideoMLDemoView] Initial state - Model: \(selectedModel.rawValue), Confidence: \(confidenceThreshold), IoU: \(iouThreshold), FrameRate: \(processingFrameRate)")
+      
+      // Setup persistence service for auto-saving results
+      videoMLManager.persistenceService = MLResultsPersistenceService(modelContext: modelContext)
     }
     .fileImporter(
       isPresented: $isShowingVideoPicker,

@@ -12,6 +12,10 @@ import SwiftUI
 struct SidebarApp: App {
   var sharedModelContainer: ModelContainer = {
     let schema = Schema([
+      ImageMLResultEntity.self,
+      VideoMLResultEntity.self,
+      VideoFrameResultEntity.self,
+      DetectionResultEntity.self
     ])
     let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
