@@ -7,9 +7,24 @@
 
 import SwiftData
 import SwiftUI
+import AppKit
+
+class AppDelegate: NSObject, NSApplicationDelegate {
+    func applicationDidFinishLaunching(_ aNotification: Notification) {
+        // Disable automatic window tabbing
+        NSWindow.allowsAutomaticWindowTabbing = false
+    }
+    
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        // Prevent creating new tabs when clicking dock icon
+        return false
+    }
+}
 
 @main
 struct SidebarApp: App {
+  @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+  
   var sharedModelContainer: ModelContainer = {
     let schema = Schema([
     ])
