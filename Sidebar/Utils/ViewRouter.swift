@@ -49,10 +49,10 @@ enum ViewRouter {
 
   /// Primary method to build views using @ViewBuilder for optimal performance
   @ViewBuilder
-  static func buildView(for item: SidebarItem) -> some View {
+  static func buildView(for item: SidebarItem, selectedItem: Binding<SidebarItem>) -> some View {
     switch item.type {
     case .home:
-      HomeView()
+      HomeView(selectedItem: selectedItem)
     case .profile:
       ProfileView()
     case .settings:

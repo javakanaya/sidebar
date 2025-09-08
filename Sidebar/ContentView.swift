@@ -24,7 +24,7 @@ struct ContentView: View {
       SidebarView(items: sidebarItems, selectedItem: $selectedItem)
     } detail: {
       // Right Column
-      ViewRouter.buildView(for: selectedItem)
+      ViewRouter.buildView(for: selectedItem, selectedItem: $selectedItem)
     }
   }
 }
